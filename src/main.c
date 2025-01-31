@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <sys/wait.h>
 
 char* getInput()
 {
@@ -74,28 +75,45 @@ char** parseInput(char* str)
     tokens[i] = NULL; // null termination
 
     free(strCopy);
-	
+
     return tokens;
 }
 
+int execProc(char** args)
+{
+    pid_t pid = fork();
+    if (pid == -1) {
+        perror("fork failed");
+        exit(1);
+    }
+
+    if (pid == 0) {
+        if (execvp(args[0], args) == -1) {
+            perror("execvp failed");
+            exit(1);
+        }
+    } else {
+        wait(NULL);
+    }
+}
 
 int main(void)
 {
 	while (1)
 	{
-		// read
 		char* defaultPrompt = "rsh> ";
 		printf("%s", defaultPrompt);
+		fflush(stdout);
 
+		// read
 		char* input = trimwhitespace(getInput());
 
 		// parse
 		char** arguments = parseInput(input);
-		if (arguments == NULL) return 1;
-		
 
 		// eval
 		//execl("/bin/ls", "ls", (char *)NULL);
+		execProc(arguments);
 
 		// loop
 	}
