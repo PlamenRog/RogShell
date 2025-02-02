@@ -5,11 +5,14 @@
 #include <ctype.h>
 #include <sys/wait.h>
 
-char** BUILTIN_NAMES = {
+int com_cd(char** args);
+int com_exit(char** args);
+
+char* BUILTIN_NAMES[] = {
 	"cd",
 	"exit"
 };
-int NUM_OF_BUILTINS = sizeof(builtins) / sizeof(char *);
+int NUM_OF_BUILTINS = sizeof(BUILTIN_NAMES) / sizeof(char *);
 
 int (*BUILTIN_FUNCS[]) (char **) = {
 	&com_cd,
@@ -129,7 +132,7 @@ int com_exit(char** args)
 
 int shellExec(char** args) {
 	for (int i = 0; i < NUM_OF_BUILTINS; i++) {
-		if (strcmp(args[0], BUILTIN_NAMES[i] == 0)) {
+		if (strcmp(args[0], BUILTIN_NAMES[i]) == 0) {
 			return (*BUILTIN_FUNCS[i])(args); // runs passed command if its builtin
 		}
 	}
@@ -153,7 +156,8 @@ int main(void)
 
 		// eval
 		//execl("/bin/ls", "ls", (char *)NULL);
-		execProc(arguments);
+		//execProc(arguments);
+		shellExec(arguments);
 
 		// loop
 	}
