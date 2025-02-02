@@ -5,6 +5,17 @@
 #include <ctype.h>
 #include <sys/wait.h>
 
+char** BUILTIN_NAMES = {
+	"cd",
+	"exit"
+};
+int NUM_OF_BUILTINS = sizeof(builtins) / sizeof(char *);
+
+int (*BUILTIN_FUNCS[]) (char **) = {
+	&com_cd,
+	&com_exit
+};
+
 char* getInput()
 {
 	char *input = NULL;
@@ -95,6 +106,35 @@ int execProc(char** args)
     } else {
         wait(NULL);
     }
+
+	return 1;
+}
+
+int com_cd(char** args)
+{
+	if (args[1] == NULL) {
+		fprintf(stderr, "RogShell: not the way to use the \"cd\" command!\n");
+	} else {
+		if (chdir(args[1]) != 0) {
+			perror("RogShell");
+		}
+	}
+	return 1;
+}
+
+int com_exit(char** args)
+{
+	return EXIT_SUCCESS;
+}
+
+int shellExec(char** args) {
+	for (int i = 0; i < NUM_OF_BUILTINS; i++) {
+		if (strcmp(args[0], BUILTIN_NAMES[i] == 0)) {
+			return (*BUILTIN_FUNCS[i])(args); // runs passed command if its builtin
+		}
+	}
+
+	return execProc(args);
 }
 
 int main(void)
