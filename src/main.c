@@ -6,7 +6,7 @@
 #include <sys/wait.h>
 
 int com_cd(char** args);
-int com_exit(char** args);
+int com_exit();
 
 char* BUILTIN_NAMES[] = {
 	"cd",
@@ -110,7 +110,7 @@ int execProc(char** args)
         wait(NULL);
     }
 
-	return 1;
+	return EXIT_FAILURE;
 }
 
 int com_cd(char** args)
@@ -122,10 +122,10 @@ int com_cd(char** args)
 			perror("RogShell");
 		}
 	}
-	return 1;
+	return EXIT_FAILURE;
 }
 
-int com_exit(char** args)
+int com_exit()
 {
 	return EXIT_SUCCESS;
 }
@@ -142,6 +142,9 @@ int shellExec(char** args) {
 
 int main(void)
 {
+	char* input;
+	char** arguments;
+
 	while (1)
 	{
 		char* defaultPrompt = "rsh> ";
@@ -149,17 +152,15 @@ int main(void)
 		fflush(stdout);
 
 		// read
-		char* input = trimwhitespace(getInput());
+		input = trimwhitespace(getInput());
 
 		// parse
-		char** arguments = parseInput(input);
+		arguments = parseInput(input);
 
 		// eval
-		//execl("/bin/ls", "ls", (char *)NULL);
-		//execProc(arguments);
 		shellExec(arguments);
-
-		// loop
+		free(input);
+		free(arguments);
 	}
 
 	return EXIT_SUCCESS;
