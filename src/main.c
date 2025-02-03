@@ -41,13 +41,15 @@ char *trimwhitespace(char *str)
 
 	while(isspace((unsigned char)*str)) str++;
 
-	if(*str == 0)
-		return str;
+	if(*str == 0) // crashes here
+		return str;	
 
 	end = str + strlen(str) - 1;
+
 	while(end > str && isspace((unsigned char)*end)) end--;
 
 	end[1] = '\0';
+
 
 	return str;
 }
@@ -131,6 +133,10 @@ int com_exit()
 }
 
 int shellExec(char** args) {
+	if (args[0] == NULL) {
+		return EXIT_SUCCESS;
+	}
+	
 	for (int i = 0; i < NUM_OF_BUILTINS; i++) {
 		if (strcmp(args[0], BUILTIN_NAMES[i]) == 0) {
 			return (*BUILTIN_FUNCS[i])(args); // runs passed command if its builtin
@@ -159,8 +165,6 @@ int main(void)
 
 		// eval
 		shellExec(arguments);
-		free(input);
-		free(arguments);
 	}
 
 	return EXIT_SUCCESS;
