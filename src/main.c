@@ -6,16 +6,19 @@
 #include <sys/wait.h>
 
 int com_cd(char** args);
+int com_custom();
 int com_exit();
 
 char* BUILTIN_NAMES[] = {
 	"cd",
+	"cutomize"
 	"exit"
 };
 int NUM_OF_BUILTINS = sizeof(BUILTIN_NAMES) / sizeof(char *);
 
 int (*BUILTIN_FUNCS[]) (char **) = {
 	&com_cd,
+	&com_custom,
 	&com_exit
 };
 
@@ -41,7 +44,7 @@ char *trimwhitespace(char *str)
 
 	while(isspace((unsigned char)*str)) str++;
 
-	if(*str == 0) // crashes here
+	if(*str == 0)
 		return str;	
 
 	end = str + strlen(str) - 1;
@@ -125,6 +128,18 @@ int com_cd(char** args)
 		}
 	}
 	return EXIT_FAILURE;
+}
+
+int com_custom()
+{
+	fprintf(stdout, "%s\n", "\n"
+	        "Prompt Color\n"
+	        "Prompt Text\n"
+	        "\n");
+	//char* customInput = trimwhitespace(getInput());
+	// TODO: implement more customizations
+
+	return EXIT_SUCCESS;
 }
 
 int com_exit()
