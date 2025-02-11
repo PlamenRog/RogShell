@@ -11,7 +11,7 @@ int com_exit();
 
 char* BUILTIN_NAMES[] = {
 	"cd",
-	"cutomize"
+	"customize",
 	"exit"
 };
 int NUM_OF_BUILTINS = sizeof(BUILTIN_NAMES) / sizeof(char *);
@@ -133,10 +133,10 @@ int com_cd(char** args)
 int com_custom()
 {
 	fprintf(stdout, "%s\n", "\n"
-	        "Prompt Color\n"
-	        "Prompt Text\n"
-	        "\n");
-	//char* customInput = trimwhitespace(getInput());
+	        "1. Prompt Color\n"
+	        "2. Prompt Text\n");
+	char* customInput = trimwhitespace(getInput());
+	int cusChoice = atoi(customInput); printf("%d", cusChoice);
 	// TODO: implement more customizations
 
 	return EXIT_SUCCESS;
@@ -144,14 +144,14 @@ int com_custom()
 
 int com_exit()
 {
-	return EXIT_SUCCESS;
+	exit(EXIT_SUCCESS);
 }
 
 int shellExec(char** args) {
 	if (args[0] == NULL) {
 		return EXIT_SUCCESS;
 	}
-	
+
 	for (int i = 0; i < NUM_OF_BUILTINS; i++) {
 		if (strcmp(args[0], BUILTIN_NAMES[i]) == 0) {
 			return (*BUILTIN_FUNCS[i])(args); // runs passed command if its builtin
